@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 48%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        .handled {
+            background-color: #FFFF99
+        }
+
+        .nothandled {
+            background-color: #FF9999
+        }
+
+        .left {
+            float: left;
+            width: 60%;
+        }
+
+        .right {
+            float: right;
+            width: 38%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tests which failed</h1>
+    <table class="left">
+        <tr>
+            <th>Job</th>
+            <th>ID</th>
+            <th>timestamp</th>
+            <th>Flake github issue</th>
+        </tr>
+        {% for run in failed_runs %}
+        {% if not run.issue %}
+        <tr class="nothandled">
+            <td><a href="{{job_base_url}}{{run.job}}">{{run.job}}</a></td>
+            <td><a href="{{run.link}}">{{run.id}}</a></td>
+            <td>{{run.timestamp}}</td>
+            <td> Add to issue (some buttons here)</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+        {% for run in failed_runs %}
+        {% if run.issue %}
+        <tr class="handled">
+            <td><a href="{{job_base_url}}{{run.job}}">{{run.job}}</a></td>
+            <td><a href="{{run.link}}">{{run.id}}</a></td>
+            <td>{{run.timestamp}}</td>
+            <td><a href="{{run.issue.url}}">{{ run.issue.number }}</a></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </table>
+    <table class="right">
+        <tr>
+            <th>Issue number</th>
+            <th>Title</th>
+            <th>Example Log</th>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>
