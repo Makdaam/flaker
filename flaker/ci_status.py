@@ -44,7 +44,7 @@ def repopulate_jobs():
                 ci_base_url=flaker.config["CI_BASE_URL"],
                 ci_namespace=flaker.config["CI_NAMESPACE"],
                 name=j,
-                last_checked=None,
+                last_checked=datetime.utcfromtimestamp(1),
             )
             db.session.add(nj)
         db.session.commit()
