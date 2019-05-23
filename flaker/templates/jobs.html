@@ -1,0 +1,61 @@
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 48%;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        .handled {
+            background-color: #FFFF99
+        }
+
+        .nothandled {
+            background-color: #FF9999
+        }
+
+        .left {
+            float: left;
+            width: 60%;
+        }
+
+        .right {
+            float: right;
+            width: 38%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Monitored jobs</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        {{ form.submit() }}
+    </form>
+    <table class="left">
+        <tr>
+            <th>ID</th>
+            <th>Namespace</th>
+            <th>Name</th>
+            <th>last checked runs</th>
+        </tr>
+        {% for j in jobs %}
+        <tr>
+            <td>{{ j.id }}</td>
+            <td>{{ j.ci_namespace }}</td>
+            <td>{{ j.name }}</td>
+            <td>{{ j.last_checked }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

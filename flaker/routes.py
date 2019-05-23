@@ -1,17 +1,31 @@
 from flaker import flaker, ci_status, git_status
-from flask import render_template
+from flaker.models import Job, Run, Issue
+from flaker.forms import EmptyForm
+from flask import render_template, redirect
 
 
-@flaker.route("/")
-@flaker.route("/index")
+@flaker.route("/", methods=["GET", "POST"])
+@flaker.route("/index", methods=["GET", "POST"])
 def index():
-    fr = ci_status.get_failed_runs()
-    fr = ci_status.enrich_runs(fr)
-    fr = git_status.enrich_runs(fr)
+    f = EmptyForm()
+    if f.validate_on_submit():
+        ci_status.repopulate_runs()
+        git_status.repopulate_comments()
+        git_status.enrich_runs()
+        return redirect("/index")
     return render_template(
         "index.html",
         title="Flakes",
-        failed_runs=fr,
-        job_base_url="%s/builds/%s/logs/"
-        % (flaker.config["CI_BASE_URL"], flaker.config["CI_NAMESPACE"]),
+        form=f,
+        runs=Run.query.filter_by(success=False).all(),
+        issues=Issue.query.all(),
     )
+
+
+@flaker.route("/jobs", methods=["GET", "POST"])
+def jobs():
+    f = EmptyForm()
+    if f.validate_on_submit():
+        ci_status.repopulate_jobs()
+        return redirect("/jobs")
+    return render_template("jobs.html", jobs=Job.query.all(), form=f)

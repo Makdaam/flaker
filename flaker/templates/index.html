@@ -36,6 +36,12 @@
 
 <body>
     <h1>Tests which failed</h1>
+    <div>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            {{ form.submit() }}
+        </form> <a href="/jobs">Monitored CI jobs</a>
+    </div>
     <table class="left">
         <tr>
             <th>Job</th>
@@ -43,23 +49,27 @@
             <th>timestamp</th>
             <th>Flake github issue</th>
         </tr>
-        {% for run in failed_runs %}
-        {% if not run.issue %}
+        {% for run in runs %}
+        {% if not run.issue_id %}
         <tr class="nothandled">
-            <td><a href="{{job_base_url}}{{run.job}}">{{run.job}}</a></td>
-            <td><a href="{{run.link}}">{{run.id}}</a></td>
+            <td><a
+                    href="{{run.job.ci_base_url}}/builds/{{run.job.ci_namespace}}/logs/{{run.job.name}}">{{run.job.name}}</a>
+            </td>
+            <td><a href="{{run.link}}">{{run.number}}</a></td>
             <td>{{run.timestamp}}</td>
-            <td> Add to issue (some buttons here)</td>
+            <td>Add a comment to connect→</td>
         </tr>
         {% endif %}
         {% endfor %}
-        {% for run in failed_runs %}
-        {% if run.issue %}
+        {% for run in runs %}
+        {% if run.issue_id %}
         <tr class="handled">
-            <td><a href="{{job_base_url}}{{run.job}}">{{run.job}}</a></td>
-            <td><a href="{{run.link}}">{{run.id}}</a></td>
+            <td><a
+                    href="{{run.job.ci_base_url}}/builds/{{run.job.ci_namespace}}/logs/{{run.job.name}}">{{run.job.name}}</a>
+            </td>
+            <td><a href="{{run.link}}">{{run.number}}</a></td>
             <td>{{run.timestamp}}</td>
-            <td><a href="{{run.issue.url}}">{{ run.issue.number }}</a></td>
+            <td><a href="{{run.issue.link}}">{{ run.issue.number }}</a></td>
         </tr>
         {% endif %}
         {% endfor %}
@@ -71,6 +81,13 @@
             <th>Title</th>
             <th>Example Log</th>
         </tr>
+        {% for issue in issues %}
+        <tr>
+            <td><a href="{{ issue.link }}">{{ issue.number}}</a></td>
+            <td>{{ issue.title}}</td>
+            <td>{{ issue.link}}</td>
+        </tr>
+        {% endfor %}
     </table>
 
 
