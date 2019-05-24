@@ -8,6 +8,12 @@ class Job(db.Model):
     ci_namespace = db.Column(db.String())
     name = db.Column(db.String())
     last_checked = db.Column(db.DateTime, default=datetime.utcnow)
+    runs = db.relationship(
+        "Run",
+        backref="job",
+        primaryjoin="Job.id==Run.job_id",
+        lazy="dynamic",
+    )
 
     def __repr__(self):
         return "<Job %s>" % (self.name)
@@ -21,7 +27,6 @@ class Run(db.Model):
     number = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime)
     job_id = db.Column(db.Integer, db.ForeignKey("job.id"))
-    job = db.relationship("Job", foreign_keys="Run.job_id")
     issue_id = db.Column(db.Integer, db.ForeignKey("issue.id"))
     issue = db.relationship("Issue", foreign_keys="Run.issue_id")
 

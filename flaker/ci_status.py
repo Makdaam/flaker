@@ -38,6 +38,8 @@ def repopulate_jobs():
     if len(jobs_names_list) > 0:
         # repopulate only if we got valid jobs
         for j in models.Job.query.all():
+            for r in j.runs:
+                db.session.delete(r)
             db.session.delete(j)
         for j in jobs_names_list:
             nj = Job(
