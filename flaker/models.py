@@ -9,10 +9,7 @@ class Job(db.Model):
     name = db.Column(db.String())
     last_checked = db.Column(db.DateTime, default=datetime.utcnow)
     runs = db.relationship(
-        "Run",
-        backref="job",
-        primaryjoin="Job.id==Run.job_id",
-        lazy="dynamic",
+        "Run", backref="job", primaryjoin="Job.id==Run.job_id", lazy="dynamic"
     )
 
     def __repr__(self):

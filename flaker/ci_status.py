@@ -62,8 +62,17 @@ def repopulate_runs():
             resp = session.get(
                 "%s/builds/%s/logs/%s" % (job.ci_base_url, job.ci_namespace, job.name)
             )
+            purge_runs(job)
             parse_runs(resp.content, job)
             job.last_checked = datetime.utcnow()
+
+
+def purge_runs(job, epoch_threshold=7 * 24 * 60 * 60):
+    threshold = int(time.time()) - epoch_threshold
+    for run in job.runs.all():
+        if int(run.timestamp.timestamp()) < threshold:
+            db.session.delete(run)
+    db.session.commit()
 
 
 def parse_runs(html_content, job, epoch_threshold=7 * 24 * 60 * 60):
